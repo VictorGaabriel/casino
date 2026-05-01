@@ -1,0 +1,573 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+.vc{background:#080d08;min-height:100vh;font-family:'Rajdhani',sans-serif;color:#e8f5e9;position:relative}
+.bgr{position:absolute;inset:0;background-image:linear-gradient(rgba(0,180,50,.04)1px,transparent 1px),linear-gradient(90deg,rgba(0,180,50,.04)1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+.hdr{position:relative;z-index:1;text-align:center;padding:20px 16px 14px;border-bottom:1px solid rgba(0,200,60,.2);background:rgba(0,0,0,.7)}
+.logo{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:#00c83c;letter-spacing:5px;text-transform:uppercase;text-shadow:0 0 24px rgba(0,200,60,.4)}
+.logo-s{font-size:9px;letter-spacing:5px;color:rgba(0,200,60,.35);text-transform:uppercase;margin-top:3px}
+.mode-bar{display:flex;justify-content:center;gap:8px;padding:10px 16px;background:rgba(0,0,0,.6);border-bottom:1px solid rgba(0,200,60,.1);position:relative;z-index:1;flex-wrap:wrap}
+.mode-btn{padding:5px 18px;border:1px solid rgba(0,200,60,.2);border-radius:2px;background:transparent;color:rgba(0,200,60,.45);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.mode-btn.active,.mode-btn:hover{background:rgba(0,200,60,.12);border-color:#00c83c;color:#00c83c}
+.mode-btn.demo-active{background:rgba(255,200,0,.1);border-color:#ffc800;color:#ffc800}
+.demo-badge{display:inline-block;padding:2px 8px;background:rgba(255,200,0,.15);border:1px solid rgba(255,200,0,.4);border-radius:2px;font-size:10px;font-weight:700;color:#ffc800;letter-spacing:2px;margin-left:8px;vertical-align:middle}
+.bal-bar{display:flex;justify-content:center;gap:24px;padding:10px 16px;background:rgba(0,0,0,.8);border-bottom:1px solid rgba(0,200,60,.1);position:relative;z-index:1;flex-wrap:wrap;align-items:center}
+.bi{text-align:center}
+.bl{display:block;font-size:9px;letter-spacing:3px;color:rgba(0,200,60,.35);text-transform:uppercase;margin-bottom:1px}
+.bv{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:#00c83c}
+.bv.w{color:#e8f5e9}
+.bv.demo{color:#ffc800}
+.nav{display:flex;gap:6px;padding:12px 16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;background:rgba(0,0,0,.4);border-bottom:1px solid rgba(0,200,60,.08)}
+.nb{padding:6px 16px;border:1px solid rgba(0,200,60,.2);border-radius:2px;background:transparent;color:rgba(0,200,60,.5);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap}
+.nb:hover,.nb.active{background:rgba(0,200,60,.1);border-color:#00c83c;color:#00c83c}
+.pg{position:relative;z-index:1;padding:16px;display:none}
+.pg.active{display:block}
+
+/* SHARED */
+.box{background:#0a110a;border:1px solid rgba(0,200,60,.22);border-radius:3px;padding:20px;max-width:480px;margin:0 auto;position:relative}
+.box::before{content:'';position:absolute;top:-1px;left:30px;right:30px;height:1px;background:linear-gradient(90deg,transparent,#00c83c,transparent)}
+.boxtitle{font-family:'Playfair Display',serif;font-size:11px;letter-spacing:4px;color:rgba(0,200,60,.4);text-transform:uppercase;text-align:center;margin-bottom:18px}
+.gbtn{display:block;width:100%;padding:13px;background:#00c83c;border:none;border-radius:2px;color:#030803;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:4px}
+.gbtn:hover:not(:disabled){background:#00e044;transform:translateY(-1px)}
+.gbtn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.gbtn.outline{background:transparent;color:#00c83c;border:1px solid rgba(0,200,60,.4)}
+.gbtn.outline:hover:not(:disabled){background:rgba(0,200,60,.1)}
+.gbtn.red-btn{background:#c0392b;color:#fff}
+.gbtn.red-btn:hover:not(:disabled){background:#e74c3c}
+.res{text-align:center;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;min-height:36px;display:flex;align-items:center;justify-content:center;margin-top:12px;border-radius:2px;padding:8px;transition:all .3s}
+.res.win{color:#00c83c;background:rgba(0,200,60,.06);border:1px solid rgba(0,200,60,.2)}
+.res.lose{color:rgba(255,100,100,.7);background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.1)}
+.res.info{color:rgba(0,200,60,.6);background:rgba(0,200,60,.04);border:1px solid rgba(0,200,60,.1)}
+.bet-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.bl2{font-size:10px;letter-spacing:2px;color:rgba(0,200,60,.35);text-transform:uppercase}
+.badj{width:28px;height:28px;border:1px solid rgba(0,200,60,.3);border-radius:2px;background:transparent;color:#00c83c;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:'Rajdhani',sans-serif}
+.badj:hover{background:rgba(0,200,60,.1)}
+.bnum{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#e8f5e9;min-width:70px;text-align:center}
+.presets{display:flex;gap:5px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.pre{padding:4px 12px;border:1px solid rgba(0,200,60,.15);border-radius:2px;background:transparent;color:rgba(0,200,60,.45);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.pre:hover{background:rgba(0,200,60,.08);color:#00c83c;border-color:rgba(0,200,60,.4)}
+
+/* SLOTS */
+.reels-box{background:#030803;border:1px solid rgba(0,200,60,.18);border-radius:3px;padding:14px;display:flex;gap:7px;justify-content:center;margin-bottom:18px;position:relative}
+.reel{width:64px;height:64px;background:#060e06;border:1px solid rgba(0,200,60,.14);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;transition:border-color .3s,box-shadow .3s}
+.reel.winner{border-color:#00c83c;box-shadow:0 0 12px rgba(0,200,60,.35)}
+.paytbl{margin-top:16px;border:1px solid rgba(0,200,60,.1);border-radius:2px}
+.pth{background:rgba(0,200,60,.05);padding:7px 12px;font-size:9px;letter-spacing:3px;color:rgba(0,200,60,.35);text-transform:uppercase;border-bottom:1px solid rgba(0,200,60,.08)}
+.ptg{display:grid;grid-template-columns:repeat(3,1fr)}
+.ptr{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-right:1px solid rgba(0,200,60,.06);border-bottom:1px solid rgba(0,200,60,.06)}
+.ptr:nth-child(3n){border-right:none}
+.pts{font-size:13px;letter-spacing:1px}
+.ptm{font-size:10px;font-weight:700;letter-spacing:1px;color:#00c83c;font-family:'Rajdhani',sans-serif}
+
+/* MINES */
+.mines-cfg{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.mines-lbl{font-size:10px;letter-spacing:2px;color:rgba(0,200,60,.35);text-transform:uppercase}
+.mines-sel{padding:6px 12px;background:#030803;border:1px solid rgba(0,200,60,.25);border-radius:2px;color:#00c83c;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.mines-sel option{background:#0a110a}
+.mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}
+.mtile{aspect-ratio:1;background:#030e03;border:1px solid rgba(0,200,60,.18);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:all .2s;user-select:none}
+.mtile:hover:not(.revealed):not(.disabled){background:rgba(0,200,60,.08);border-color:rgba(0,200,60,.4)}
+.mtile.safe{background:rgba(0,200,60,.12);border-color:#00c83c;color:#00c83c;font-size:22px}
+.mtile.mine{background:rgba(200,30,30,.15);border-color:#c0392b;color:#e74c3c;font-size:22px}
+.mtile.disabled{cursor:not-allowed;opacity:.5}
+.mtile.hidden-mine{background:rgba(200,30,30,.06);border-color:rgba(200,30,30,.2);color:rgba(200,50,50,.5);font-size:20px}
+.mines-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.mstat{background:#030803;border:1px solid rgba(0,200,60,.1);border-radius:2px;padding:8px;text-align:center}
+.mslbl{font-size:9px;letter-spacing:2px;color:rgba(0,200,60,.3);text-transform:uppercase;display:block;margin-bottom:2px}
+.msval{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:#00c83c}
+
+/* WALLET */
+.wallet-tabs{display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid rgba(0,200,60,.1);padding-bottom:12px}
+.wtab{flex:1;padding:8px;background:transparent;border:1px solid rgba(0,200,60,.15);border-radius:2px;color:rgba(0,200,60,.4);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;text-align:center}
+.wtab:hover,.wtab.active{background:rgba(0,200,60,.1);border-color:#00c83c;color:#00c83c}
+.wpanel{display:none}
+.wpanel.active{display:block}
+.winput-lbl{font-size:10px;letter-spacing:2px;color:rgba(0,200,60,.35);text-transform:uppercase;display:block;margin-bottom:6px}
+.winput{width:100%;padding:10px 14px;background:#030803;border:1px solid rgba(0,200,60,.2);border-radius:2px;color:#e8f5e9;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;outline:none;margin-bottom:12px}
+.winput:focus{border-color:#00c83c}
+.wpix{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.wpix-btn{padding:8px;background:#030803;border:1px solid rgba(0,200,60,.12);border-radius:2px;color:rgba(0,200,60,.5);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-align:center}
+.wpix-btn:hover{background:rgba(0,200,60,.08);color:#00c83c;border-color:rgba(0,200,60,.35)}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.method{padding:12px 6px;background:#030803;border:1px solid rgba(0,200,60,.12);border-radius:2px;text-align:center;cursor:pointer;transition:all .2s}
+.method:hover,.method.sel{background:rgba(0,200,60,.08);border-color:#00c83c}
+.method-icon{font-size:20px;display:block;margin-bottom:4px}
+.method-name{font-size:10px;letter-spacing:1px;color:rgba(0,200,60,.5);text-transform:uppercase}
+.method.sel .method-name{color:#00c83c}
+.tx-list{margin-top:8px}
+.tx-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(0,200,60,.06);font-size:13px}
+.tx-type{color:rgba(0,200,60,.5);font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.tx-amt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700}
+.tx-amt.dep{color:#00c83c}
+.tx-amt.saq{color:#ff6b6b}
+.tx-date{font-size:11px;color:rgba(0,200,60,.25)}
+.info-box{background:rgba(0,200,60,.04);border:1px solid rgba(0,200,60,.12);border-radius:2px;padding:12px;margin-bottom:14px;font-size:12px;color:rgba(0,200,60,.5);line-height:1.7;letter-spacing:.5px}
+
+/* HISTORY */
+.hist-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(0,200,60,.06);font-size:13px}
+.hi-sym{font-size:13px;letter-spacing:1px}
+.hi-game{font-size:10px;letter-spacing:1px;color:rgba(0,200,60,.3);text-transform:uppercase}
+.hi-amt{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700}
+.hi-amt.pos{color:#00c83c}
+.hi-amt.neg{color:rgba(255,100,100,.6)}
+
+/* confetti */
+.cfc{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:99}
+.cp2{position:absolute;width:6px;height:6px;animation:cf 1.8s ease-in forwards}
+@keyframes cf{0%{transform:translateY(-10px) rotate(0);opacity:1}100%{transform:translateY(600px) rotate(600deg);opacity:0}}
+@keyframes pop{0%{transform:scale(.94);opacity:.6}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.res.win,.res.lose{animation:pop .4s ease}
+.mines-mult{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#00c83c;text-align:center;margin-bottom:10px;text-shadow:0 0 12px rgba(0,200,60,.4)}
+</style>
+
+<div class="vc">
+<div class="bgr"></div>
+
+<div class="hdr">
+  <div class="logo">Victor Casino</div>
+  <div class="logo-s">fortuna favorece os ousados</div>
+</div>
+
+<div class="mode-bar">
+  <button class="mode-btn active" id="realBtn" onclick="setMode('real')">Conta Real</button>
+  <button class="mode-btn" id="demoBtn" onclick="setMode('demo')">Conta Demo</button>
+  <span class="demo-badge" id="demoBadge" style="display:none">DEMO</span>
+</div>
+
+<div class="bal-bar">
+  <div class="bi"><span class="bl">saldo</span><span class="bv" id="balEl">R$ 1.000</span></div>
+  <div class="bi"><span class="bl">ganhos</span><span class="bv" id="totalWinEl">R$ 0</span></div>
+  <div class="bi"><span class="bl">rodadas</span><span class="bv w" id="rndEl">0</span></div>
+  <div class="bi"><span class="bl">modo</span><span class="bv demo" id="modeEl">REAL</span></div>
+</div>
+
+<div class="nav">
+  <button class="nb active" onclick="showPg('slots',this)">Slots</button>
+  <button class="nb" onclick="showPg('mines',this)">Mines</button>
+  <button class="nb" onclick="showPg('wallet',this)">Carteira</button>
+  <button class="nb" onclick="showPg('hist',this)">Histórico</button>
+</div>
+
+<!-- SLOTS -->
+<div class="pg active" id="pg-slots">
+<div class="box">
+  <div class="cfc" id="slotConf"></div>
+  <div class="boxtitle">Fortune Reels</div>
+  <div class="reels-box">
+    <div class="reel" id="r1">🍒</div>
+    <div class="reel" id="r2">🍋</div>
+    <div class="reel" id="r3">🍊</div>
+    <div class="reel" id="r4">🍇</div>
+    <div class="reel" id="r5">⭐</div>
+  </div>
+  <div class="bet-row">
+    <span class="bl2">Aposta</span>
+    <button class="badj" onclick="chBet(-10)">−</button>
+    <span class="bnum" id="sBetEl">R$ 10</span>
+    <button class="badj" onclick="chBet(10)">+</button>
+  </div>
+  <div class="presets">
+    <button class="pre" onclick="setBet(5)">R$5</button>
+    <button class="pre" onclick="setBet(10)">R$10</button>
+    <button class="pre" onclick="setBet(25)">R$25</button>
+    <button class="pre" onclick="setBet(50)">R$50</button>
+    <button class="pre" onclick="setBet(100)">R$100</button>
+    <button class="pre" onclick="setMaxBet()">MAX</button>
+  </div>
+  <button class="gbtn" id="spinBtn" onclick="spin()">Girar</button>
+  <div class="res" id="sRes"></div>
+  <div class="paytbl">
+    <div class="pth">Tabela de Pagamentos</div>
+    <div class="ptg">
+      <div class="ptr"><span class="pts">💎💎💎</span><span class="ptm">×50 JACKPOT</span></div>
+      <div class="ptr"><span class="pts">7️⃣7️⃣7️⃣</span><span class="ptm">×25</span></div>
+      <div class="ptr"><span class="pts">⭐⭐⭐</span><span class="ptm">×15</span></div>
+      <div class="ptr"><span class="pts">🍇🍇🍇</span><span class="ptm">×8</span></div>
+      <div class="ptr"><span class="pts">🍊🍊🍊</span><span class="ptm">×5</span></div>
+      <div class="ptr"><span class="pts">🍒🍒🍒</span><span class="ptm">×3</span></div>
+      <div class="ptr"><span class="pts">🍋🍋🍋</span><span class="ptm">×2</span></div>
+      <div class="ptr"><span class="pts">🍒🍒✦</span><span class="ptm">×1</span></div>
+      <div class="ptr"><span class="pts">⭐✦✦</span><span class="ptm">×0.5</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MINES -->
+<div class="pg" id="pg-mines">
+<div class="box">
+  <div class="cfc" id="mineConf"></div>
+  <div class="boxtitle">Campo Minado</div>
+  <div class="mines-cfg">
+    <span class="mines-lbl">Minas</span>
+    <select class="mines-sel" id="minesCount" onchange="resetMines()">
+      <option value="3">3 minas</option>
+      <option value="5" selected>5 minas</option>
+      <option value="7">7 minas</option>
+      <option value="10">10 minas</option>
+      <option value="15">15 minas</option>
+    </select>
+  </div>
+  <div class="bet-row">
+    <span class="bl2">Aposta</span>
+    <button class="badj" onclick="chMBet(-10)">−</button>
+    <span class="bnum" id="mBetEl">R$ 10</span>
+    <button class="badj" onclick="chMBet(10)">+</button>
+  </div>
+  <div class="presets">
+    <button class="pre" onclick="setMBet(5)">R$5</button>
+    <button class="pre" onclick="setMBet(10)">R$10</button>
+    <button class="pre" onclick="setMBet(25)">R$25</button>
+    <button class="pre" onclick="setMBet(50)">R$50</button>
+    <button class="pre" onclick="setMBet(100)">R$100</button>
+  </div>
+  <div class="mines-stats">
+    <div class="mstat"><span class="mslbl">Multiplicador</span><span class="msval" id="mMultEl">1.00x</span></div>
+    <div class="mstat"><span class="mslbl">Seguras</span><span class="msval" id="mSafeEl">0</span></div>
+    <div class="mstat"><span class="mslbl">Ganho</span><span class="msval" id="mGainEl">R$ 0</span></div>
+  </div>
+  <div class="mgrid" id="mGrid"></div>
+  <button class="gbtn" id="mStartBtn" onclick="startMines()">Iniciar Jogo</button>
+  <button class="gbtn outline" id="mCashBtn" onclick="cashoutMines()" style="display:none;margin-top:8px">Resgatar Ganho</button>
+  <div class="res" id="mRes"></div>
+</div>
+</div>
+
+<!-- WALLET -->
+<div class="pg" id="pg-wallet">
+<div class="box">
+  <div class="boxtitle">Carteira</div>
+  <div class="wallet-tabs">
+    <button class="wtab active" onclick="showWTab('dep',this)">Depositar</button>
+    <button class="wtab" onclick="showWTab('saq',this)">Sacar</button>
+    <button class="wtab" onclick="showWTab('tx',this)">Extrato</button>
+  </div>
+
+  <div class="wpanel active" id="wp-dep">
+    <div class="info-box">Selecione o método e o valor para depositar em sua conta. Saldo disponível imediatamente após confirmação.</div>
+    <span class="winput-lbl">Método de Pagamento</span>
+    <div class="method-grid">
+      <div class="method sel" onclick="selMethod(this,'pix')"><span class="method-icon">🔑</span><span class="method-name">PIX</span></div>
+      <div class="method" onclick="selMethod(this,'card')"><span class="method-icon">💳</span><span class="method-name">Cartão</span></div>
+      <div class="method" onclick="selMethod(this,'boleto')"><span class="method-icon">📄</span><span class="method-name">Boleto</span></div>
+    </div>
+    <span class="winput-lbl">Valor do Depósito</span>
+    <input class="winput" type="number" id="depInput" placeholder="R$ 0,00" min="10" />
+    <div class="wpix">
+      <button class="wpix-btn" onclick="setDepVal(50)">R$50</button>
+      <button class="wpix-btn" onclick="setDepVal(100)">R$100</button>
+      <button class="wpix-btn" onclick="setDepVal(250)">R$250</button>
+      <button class="wpix-btn" onclick="setDepVal(500)">R$500</button>
+    </div>
+    <button class="gbtn" onclick="doDeposit()">Depositar Agora</button>
+    <div class="res" id="depRes"></div>
+  </div>
+
+  <div class="wpanel" id="wp-saq">
+    <div class="info-box">Saques via PIX são processados em até 10 minutos. Valor mínimo: R$20. Você precisa ter jogado o saldo pelo menos 1x.</div>
+    <span class="winput-lbl">Chave PIX</span>
+    <input class="winput" type="text" id="pixKey" placeholder="CPF, e-mail ou telefone" />
+    <span class="winput-lbl">Valor do Saque</span>
+    <input class="winput" type="number" id="saqInput" placeholder="R$ 0,00" min="20" />
+    <div class="wpix">
+      <button class="wpix-btn" onclick="setSaqVal(50)">R$50</button>
+      <button class="wpix-btn" onclick="setSaqVal(100)">R$100</button>
+      <button class="wpix-btn" onclick="setSaqVal(250)">R$250</button>
+      <button class="wpix-btn" onclick="setSaqAll()">Tudo</button>
+    </div>
+    <button class="gbtn red-btn" onclick="doSaque()">Solicitar Saque</button>
+    <div class="res" id="saqRes"></div>
+  </div>
+
+  <div class="wpanel" id="wp-tx">
+    <div class="boxtitle" style="margin-bottom:12px">Extrato de Transações</div>
+    <div id="txList"><p style="text-align:center;color:rgba(0,200,60,.2);font-size:13px;padding:20px 0;letter-spacing:2px">Nenhuma transação ainda</p></div>
+  </div>
+</div>
+</div>
+
+<!-- HISTORY -->
+<div class="pg" id="pg-hist">
+<div class="box">
+  <div class="boxtitle">Histórico de Jogadas</div>
+  <div id="histList"><p style="text-align:center;color:rgba(0,200,60,.2);font-size:13px;padding:20px 0;letter-spacing:2px">Nenhuma jogada ainda</p></div>
+</div>
+</div>
+
+<div style="text-align:center;font-size:10px;color:rgba(0,200,60,.12);padding:14px;position:relative;z-index:1;letter-spacing:2px">Apenas para entretenimento · Sem valor real</div>
+</div>
+
+<script>
+const SYMS=['🍒','🍋','🍊','🍇','⭐','7️⃣','💎'];
+const WTS=[28,22,18,12,10,6,4];
+const PAY={'💎💎💎':50,'7️⃣7️⃣7️⃣':25,'⭐⭐⭐':15,'🍇🍇🍇':8,'🍊🍊🍊':5,'🍒🍒🍒':3,'🍋🍋🍋':2};
+
+let realBal=1000, demoBal=5000, mode='real';
+let totalWin=0, rounds=0;
+let sBet=10, mBet=10;
+let spinning=false;
+let hist=[], txList=[];
+let minesActive=false, mGrid=[], mMines=[], mSafe=0, mMult=1;
+let selPayMethod='pix';
+
+const fmt=n=>'R$ '+Math.round(n).toLocaleString('pt-BR');
+const getBal=()=>mode==='real'?realBal:demoBal;
+const setBal=v=>{ if(mode==='real') realBal=v; else demoBal=v; };
+
+function ui(){
+  const b=getBal();
+  document.getElementById('balEl').textContent=fmt(b);
+  document.getElementById('balEl').style.color=mode==='demo'?'#ffc800':'#00c83c';
+  document.getElementById('totalWinEl').textContent=fmt(totalWin);
+  document.getElementById('rndEl').textContent=rounds;
+  document.getElementById('modeEl').textContent=mode==='real'?'REAL':'DEMO';
+  document.getElementById('sBetEl').textContent=fmt(sBet);
+  document.getElementById('mBetEl').textContent=fmt(mBet);
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById('realBtn').classList.toggle('active',m==='real');
+  document.getElementById('demoBtn').classList.toggle('active',m==='demo');
+  document.getElementById('demoBtn').classList.toggle('demo-active',m==='demo');
+  document.getElementById('demoBadge').style.display=m==='demo'?'inline-block':'none';
+  totalWin=0; rounds=0;
+  ui();
+}
+
+function showPg(name,btn){
+  document.querySelectorAll('.pg').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(e=>e.classList.remove('active'));
+  document.getElementById('pg-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function confetti(containerId){
+  const c=document.getElementById(containerId);
+  c.innerHTML='';
+  const cols=['#00c83c','#00ff55','#e8f5e9','#7fff00','#00e044'];
+  for(let i=0;i<40;i++){
+    const p=document.createElement('div');
+    p.className='cp2';
+    p.style.cssText=`left:${Math.random()*100}%;top:-8px;background:${cols[~~(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-delay:${Math.random()*.6}s;animation-duration:${1.2+Math.random()*1}s`;
+    c.appendChild(p);
+  }
+  setTimeout(()=>{c.innerHTML='';},2200);
+}
+
+function addHist(game,sym,bet,win){
+  const net=win-bet;
+  hist.unshift({game,sym,net});
+  if(hist.length>30) hist.pop();
+  renderHist();
+}
+
+function renderHist(){
+  const el=document.getElementById('histList');
+  if(!hist.length){el.innerHTML='<p style="text-align:center;color:rgba(0,200,60,.2);font-size:13px;padding:20px 0;letter-spacing:2px">Nenhuma jogada ainda</p>';return;}
+  el.innerHTML=hist.map(h=>`<div class="hist-item"><div><div class="hi-sym">${h.sym}</div><div class="hi-game">${h.game}</div></div><span class="hi-amt ${h.net>=0?'pos':'neg'}">${h.net>=0?'+':''}${fmt(h.net)}</span></div>`).join('');
+}
+
+function addTx(type,val,method){
+  txList.unshift({type,val,method,date:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
+  renderTx();
+}
+
+function renderTx(){
+  const el=document.getElementById('txList');
+  if(!txList.length){el.innerHTML='<p style="text-align:center;color:rgba(0,200,60,.2);font-size:13px;padding:20px 0;letter-spacing:2px">Nenhuma transação ainda</p>';return;}
+  el.innerHTML=txList.map(t=>`<div class="tx-item"><div><div class="tx-type">${t.type==='dep'?'Depósito':'Saque'} · ${t.method.toUpperCase()}</div><div class="tx-date">${t.date}</div></div><span class="tx-amt ${t.type}">${t.type==='dep'?'+':'-'}${fmt(t.val)}</span></div>`).join('');
+}
+
+/* SLOTS */
+function wRand(){let r=Math.random()*WTS.reduce((a,b)=>a+b,0);for(let i=0;i<SYMS.length;i++){r-=WTS[i];if(r<=0)return SYMS[i];}return SYMS[SYMS.length-1];}
+function calcWin(res){const cnt={};res.forEach(s=>cnt[s]=(cnt[s]||0)+1);const best=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];const k=best[0]+best[0]+best[0];if(best[1]>=3&&PAY[k])return{mult:PAY[k],sym:best[0]};if(best[1]===2&&best[0]==='🍒')return{mult:1,sym:'🍒'};if(res.includes('⭐'))return{mult:.5,sym:'⭐'};return null;}
+function chBet(d){sBet=Math.max(5,Math.min(getBal(),sBet+d));ui();}
+function setBet(v){sBet=Math.max(5,Math.min(getBal(),v));ui();}
+function setMaxBet(){sBet=Math.min(getBal(),500);ui();}
+
+async function spin(){
+  if(spinning||getBal()<sBet)return;
+  spinning=true;setBal(getBal()-sBet);rounds++;ui();
+  document.getElementById('spinBtn').disabled=true;
+  const re=document.getElementById('sRes');
+  re.className='res';re.textContent='';
+  for(let i=1;i<=5;i++)document.getElementById('r'+i).classList.remove('winner');
+  const final=Array.from({length:5},()=>wRand());
+  let frame=0;
+  await new Promise(resolve=>{
+    const iv=setInterval(()=>{
+      frame++;
+      for(let i=0;i<5;i++){
+        const el=document.getElementById('r'+(i+1));
+        if(frame<16-i*2)el.textContent=SYMS[~~(Math.random()*SYMS.length)];
+        else el.textContent=final[i];
+      }
+      if(frame>=22){clearInterval(iv);resolve();}
+    },75);
+  });
+  const wd=calcWin(final);
+  let winAmt=0,cls='res lose',msg='Sem sorte desta vez';
+  if(wd){
+    winAmt=Math.round(sBet*wd.mult);
+    setBal(getBal()+winAmt);totalWin+=winAmt;
+    for(let i=0;i<5;i++)if(final[i]===wd.sym)document.getElementById('r'+(i+1)).classList.add('winner');
+    if(wd.mult>=50){cls='res win';msg='JACKPOT! +'+fmt(winAmt);confetti('slotConf');}
+    else if(wd.mult>=15){cls='res win';msg='GRANDE VITÓRIA! +'+fmt(winAmt);confetti('slotConf');}
+    else{cls='res win';msg='Ganhou +'+fmt(winAmt);}
+  }
+  addHist('Slots',final.join(''),sBet,winAmt);
+  re.className=cls;re.textContent=msg;
+  if(sBet>getBal())sBet=Math.max(5,getBal());
+  ui();spinning=false;
+  document.getElementById('spinBtn').disabled=false;
+}
+
+/* MINES */
+function chMBet(d){mBet=Math.max(5,Math.min(getBal(),mBet+d));ui();}
+function setMBet(v){mBet=Math.max(5,Math.min(getBal(),v));ui();}
+
+function getMinesMultiplier(safe,mines){
+  const total=25,safe_tiles=total-mines;
+  let m=1;
+  for(let i=0;i<safe;i++)m*=(safe_tiles-i)/(total-i);
+  const base=0.97/m;
+  return Math.max(1,Math.round(base*100)/100);
+}
+
+function resetMines(){
+  minesActive=false;mSafe=0;mMult=1;mGrid=[];mMines=[];
+  document.getElementById('mStartBtn').style.display='block';
+  document.getElementById('mCashBtn').style.display='none';
+  document.getElementById('mRes').className='res';document.getElementById('mRes').textContent='';
+  updateMinesStats();renderMinesGrid(false);
+}
+
+function updateMinesStats(){
+  const gain=minesActive?Math.round(mBet*mMult):0;
+  document.getElementById('mMultEl').textContent=mMult.toFixed(2)+'x';
+  document.getElementById('mSafeEl').textContent=mSafe;
+  document.getElementById('mGainEl').textContent=fmt(gain);
+}
+
+function renderMinesGrid(active){
+  const g=document.getElementById('mGrid');
+  g.innerHTML='';
+  for(let i=0;i<25;i++){
+    const d=document.createElement('div');
+    d.className='mtile'+(active?'':' disabled');
+    d.dataset.i=i;
+    if(mGrid[i]==='safe'){d.classList.add('safe');d.textContent='💎';}
+    else if(mGrid[i]==='mine'){d.classList.add('mine');d.textContent='💣';}
+    else if(!active&&mMines.length){
+      if(mMines.includes(i)){d.classList.add('hidden-mine');d.textContent='💣';}
+      else d.textContent='';
+    } else d.textContent='';
+    if(active&&!mGrid[i])d.onclick=()=>clickTile(i);
+    g.appendChild(d);
+  }
+}
+
+function startMines(){
+  if(getBal()<mBet)return;
+  setBal(getBal()-mBet);rounds++;
+  minesActive=true;mSafe=0;
+  const cnt=parseInt(document.getElementById('minesCount').value);
+  mMines=[];mGrid=new Array(25).fill(null);
+  while(mMines.length<cnt){const r=~~(Math.random()*25);if(!mMines.includes(r))mMines.push(r);}
+  mMult=getMinesMultiplier(0,cnt);
+  document.getElementById('mStartBtn').style.display='none';
+  document.getElementById('mCashBtn').style.display='block';
+  document.getElementById('mRes').className='res info';document.getElementById('mRes').textContent='Clique nas células para revelar!';
+  updateMinesStats();renderMinesGrid(true);ui();
+}
+
+function clickTile(i){
+  if(!minesActive||mGrid[i])return;
+  if(mMines.includes(i)){
+    mGrid[i]='mine';
+    mMines.forEach(m=>{mGrid[m]='mine';});
+    minesActive=false;
+    document.getElementById('mStartBtn').style.display='block';
+    document.getElementById('mCashBtn').style.display='none';
+    document.getElementById('mRes').className='res lose';document.getElementById('mRes').textContent='BOOM! Você perdeu '+fmt(mBet);
+    addHist('Mines','💣×'+mMines.length,mBet,0);
+    renderMinesGrid(false);updateMinesStats();ui();
+  } else {
+    mGrid[i]='safe';mSafe++;
+    const cnt=parseInt(document.getElementById('minesCount').value);
+    mMult=getMinesMultiplier(mSafe,cnt);
+    const gain=Math.round(mBet*mMult);
+    document.getElementById('mRes').className='res info';document.getElementById('mRes').textContent='Seguro! Multiplicador: '+mMult.toFixed(2)+'x';
+    const safeTiles=25-cnt;
+    if(mSafe>=safeTiles){
+      cashoutMines();return;
+    }
+    updateMinesStats();renderMinesGrid(true);
+  }
+}
+
+function cashoutMines(){
+  if(!minesActive)return;
+  const win=Math.round(mBet*mMult);
+  setBal(getBal()+win);totalWin+=win;minesActive=false;
+  document.getElementById('mStartBtn').style.display='block';
+  document.getElementById('mCashBtn').style.display='none';
+  document.getElementById('mRes').className='res win';document.getElementById('mRes').textContent='Resgatado! +'+fmt(win);
+  addHist('Mines','💎×'+mSafe,mBet,win);
+  if(mMult>=5)confetti('mineConf');
+  mMines.forEach(m=>{mGrid[m]='mine';});
+  renderMinesGrid(false);updateMinesStats();ui();
+}
+
+/* WALLET */
+function showWTab(name,btn){
+  document.querySelectorAll('.wpanel').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.wtab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('wp-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function selMethod(el,m){
+  document.querySelectorAll('.method').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');selPayMethod=m;
+}
+
+function setDepVal(v){document.getElementById('depInput').value=v;}
+function setSaqVal(v){document.getElementById('saqInput').value=v;}
+function setSaqAll(){document.getElementById('saqInput').value=Math.round(getBal());}
+
+function doDeposit(){
+  if(mode==='demo'){
+    const r=document.getElementById('depRes');
+    r.className='res lose';r.textContent='Depósitos apenas na conta real';return;
+  }
+  const v=parseFloat(document.getElementById('depInput').value);
+  const r=document.getElementById('depRes');
+  if(!v||v<10){r.className='res lose';r.textContent='Valor mínimo: R$10';return;}
+  setBal(getBal()+v);
+  addTx('dep',v,selPayMethod);
+  r.className='res win';r.textContent='+'+fmt(v)+' depositado!';
+  document.getElementById('depInput').value='';ui();
+}
+
+function doSaque(){
+  if(mode==='demo'){
+    const r=document.getElementById('saqRes');
+    r.className='res lose';r.textContent='Saques apenas na conta real';return;
+  }
+  const v=parseFloat(document.getElementById('saqInput').value);
+  const pk=document.getElementById('pixKey').value.trim();
+  const r=document.getElementById('saqRes');
+  if(!pk){r.className='res lose';r.textContent='Informe sua chave PIX';return;}
+  if(!v||v<20){r.className='res lose';r.textContent='Valor mínimo: R$20';return;}
+  if(v>getBal()){r.className='res lose';r.textContent='Saldo insuficiente';return;}
+  setBal(getBal()-v);
+  addTx('saq',v,'pix');
+  r.className='res win';r.textContent='Saque de '+fmt(v)+' solicitado!';
+  document.getElementById('saqInput').value='';ui();
+}
+
+resetMines();ui();
+</script>
